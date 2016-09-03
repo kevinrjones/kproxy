@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/kproxy.iml" filepath="$PROJECT_DIR$/.idea/modules/kproxy.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/kproxy_integrationTest.iml" filepath="$PROJECT_DIR$/.idea/modules/kproxy_integrationTest.iml" group="kproxy" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/kproxy_main.iml" filepath="$PROJECT_DIR$/.idea/modules/kproxy_main.iml" group="kproxy" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/kproxy_test.iml" filepath="$PROJECT_DIR$/.idea/modules/kproxy_test.iml" group="kproxy" />
     </modules>

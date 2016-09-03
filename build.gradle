@@ -1,33 +1,46 @@
-group 'com.rsk'
-version '1.0-SNAPSHOT'
-
 buildscript {
-    ext.kotlin_version = '1.0.3'
+    ext.kotlin_version = '1.1-M01'
+    ext.kotlin_gradle_version = '1.1-M01'
+
     ext.logback_version = '1.1.7'
     ext.slf4j_version = '1.7.21'
     ext.underflow_version = '1.4.0.Final'
     ext.httpClient_version = '4.5.2'
     ext.junit_version = '5.0.0-ALPHA'
-    ext.spek_version = '1.0.77'
 
-    ext.junit_platform_gradle_plugin = '1.0.0-M2'
+    ext.spek_version = '1.0.89'
+    ext.junit_platform_gradle_plugin_version = '1.0.0-M2'
 
     repositories {
         jcenter()
         maven {
             url "https://dl.bintray.com/jetbrains/spek/"
         }
+        maven {
+            url "https://dl.bintray.com/kotlin/kotlin-eap-1.1"
+        }
     }
     dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "org.junit.platform:junit-platform-gradle-plugin:$junit_platform_gradle_plugin"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_gradle_version"
+        classpath "org.junit.platform:junit-platform-gradle-plugin:$junit_platform_gradle_plugin_version"
     }
+
 
 }
 
+plugins {
+    id 'org.unbroken-dome.test-sets' version '1.2.0'
+}
+
+group 'com.rsk'
+version '1.0-SNAPSHOT'
+
 apply plugin: 'java'
 apply plugin: 'kotlin'
+apply plugin: 'idea'
+apply plugin: 'eclipse'
 apply plugin: 'org.junit.platform.gradle.plugin'
+apply plugin: 'org.unbroken-dome.test-sets'
 
 junitPlatform {
     engines {
@@ -39,19 +52,48 @@ sourceCompatibility = 1.8
 
 repositories {
     jcenter()
+    maven {
+        url "https://dl.bintray.com/jetbrains/spek/"
+    }
+    maven {
+        url "https://dl.bintray.com/kotlin/kotlin-eap-1.1"
+    }
 }
 
-dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    compile "org.apache.httpcomponents:httpclient:$httpClient_version"
-    compile "ch.qos.logback:logback-classic:$logback_version"
-    compile "org.slf4j:slf4j-api:$slf4j_version"
-    compile "io.undertow:undertow-core:$underflow_version"
-
-
-    testCompile "org.junit:junit5-api:$junit_version"
-    testCompile "org.jetbrains.spek:spek-api:$spek_version"
-
-    runtime "org.junit.platform:junit-platform-launcher:1.0.0-M2"
-    runtime "org.jetbrains.spek:spek-junit-platform-engine:$spek_version"
+testSets {
+    integrationTest
 }
+
+sourceSets {
+    integrationTest {
+        java {
+            srcDirs = ['src/integrationTest/java']
+        }
+        kotlin {
+            srcDirs = ['src/integrationTest//kotlin']
+        }
+    }
+
+
+    configurations {
+        integrationTestCompile.extendsFrom testCompile
+        integrationTestRuntime.extendsFrom testRuntime
+    }
+
+    dependencies {
+        compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+        compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+
+        compile "org.apache.httpcomponents:httpclient:$httpClient_version"
+        compile "ch.qos.logback:logback-classic:$logback_version"
+        compile "org.slf4j:slf4j-api:$slf4j_version"
+        compile "io.undertow:undertow-core:$underflow_version"
+
+        testCompile "org.junit:junit5-api:$junit_version"
+        testCompile "org.jetbrains.spek:spek-api:$spek_version"
+
+        runtime "org.junit.platform:junit-platform-launcher:$junit_platform_gradle_plugin_version"
+        runtime "org.jetbrains.spek:spek-junit-platform-engine:$spek_version"
+    }
+}
+

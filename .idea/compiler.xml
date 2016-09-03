@@ -18,6 +18,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="1.8">
+      <module name="kproxy_integrationTest" target="1.8" />
       <module name="kproxy_main" target="1.8" />
       <module name="kproxy_test" target="1.8" />
     </bytecodeTargetLevel>
