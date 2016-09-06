@@ -4,7 +4,6 @@ buildscript {
 
     ext.logback_version = '1.1.7'
     ext.slf4j_version = '1.7.21'
-    ext.underflow_version = '1.4.0.Final'
     ext.httpClient_version = '4.5.2'
     ext.junit_version = '5.0.0-ALPHA'
 
@@ -73,27 +72,26 @@ sourceSets {
             srcDirs = ['src/integrationTest//kotlin']
         }
     }
-
-
-    configurations {
-        integrationTestCompile.extendsFrom testCompile
-        integrationTestRuntime.extendsFrom testRuntime
-    }
-
-    dependencies {
-        compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-        compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
-
-        compile "org.apache.httpcomponents:httpclient:$httpClient_version"
-        compile "ch.qos.logback:logback-classic:$logback_version"
-        compile "org.slf4j:slf4j-api:$slf4j_version"
-        compile "io.undertow:undertow-core:$underflow_version"
-
-        testCompile "org.junit:junit5-api:$junit_version"
-        testCompile "org.jetbrains.spek:spek-api:$spek_version"
-
-        runtime "org.junit.platform:junit-platform-launcher:$junit_platform_gradle_plugin_version"
-        runtime "org.jetbrains.spek:spek-junit-platform-engine:$spek_version"
-    }
 }
+
+configurations {
+    integrationTestCompile.extendsFrom testCompile
+    integrationTestRuntime.extendsFrom testRuntime
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+
+    compile "org.apache.httpcomponents:httpclient:$httpClient_version"
+    compile "ch.qos.logback:logback-classic:$logback_version"
+    compile "org.slf4j:slf4j-api:$slf4j_version"
+
+    testCompile "org.junit:junit5-api:$junit_version"
+    testCompile "org.jetbrains.spek:spek-api:$spek_version"
+
+    runtime "org.junit.platform:junit-platform-launcher:$junit_platform_gradle_plugin_version"
+    runtime "org.jetbrains.spek:spek-junit-platform-engine:$spek_version"
+}
+
 

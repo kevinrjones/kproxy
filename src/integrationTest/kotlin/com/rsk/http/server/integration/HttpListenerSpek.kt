@@ -1,6 +1,6 @@
 package com.rsk.http.server.integration
 
-import com.rsk.http.server.HttpListener
+import com.rsk.http.client.HttpClientTask
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
@@ -10,7 +10,7 @@ import org.jetbrains.spek.api.dsl.it
  */
 class HttpListenerSpek : Spek ({
 
-    val listener = HttpListener("GET http://localhost:8080 HTTP/1.1")
+    val listener = HttpClientTask("GET http://localhost:8080 HTTP/1.1")
 
     describe("the http listener") {
         it("should connect to the server") {
