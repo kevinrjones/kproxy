@@ -1,5 +1,7 @@
+
 /**
  * Created by kevinj on 03/09/2016.
+ * see: http://stackoverflow.com/a/34462577/120599
  */
 package com.rsk
 

@@ -6,6 +6,8 @@ buildscript {
     ext.slf4j_version = '1.7.21'
     ext.httpClient_version = '4.5.2'
     ext.junit_version = '5.0.0-ALPHA'
+    ext.kluent_version = '1.6'
+    ext.mokito_kotlin_version = '0.6.0'
 
     ext.spek_version = '1.0.89'
     ext.junit_platform_gradle_plugin_version = '1.0.0-M2'
@@ -89,6 +91,8 @@ dependencies {
 
     testCompile "org.junit:junit5-api:$junit_version"
     testCompile "org.jetbrains.spek:spek-api:$spek_version"
+    testCompile "org.amshove.kluent:kluent:$kluent_version"
+    testCompile "com.nhaarman:mockito-kotlin:$mokito_kotlin_version"
 
     runtime "org.junit.platform:junit-platform-launcher:$junit_platform_gradle_plugin_version"
     runtime "org.jetbrains.spek:spek-junit-platform-engine:$spek_version"

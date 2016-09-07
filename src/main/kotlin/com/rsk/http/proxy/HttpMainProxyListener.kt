@@ -1,9 +1,9 @@
 package com.rsk.http.proxy
 
-import com.rsk.http.server.HttpServerTask
+import com.rsk.http.server.ProxyHttpServerTask
+import com.rsk.http.server.HttpServerTaskFactory
 import com.rsk.http.socket.IServerSocket
 import com.rsk.logger
-import java.net.ServerSocket
 import java.util.*
 
 /**
@@ -17,15 +17,15 @@ import java.util.*
  * @version 0.1
  * Created by kevin on 04/09/2016.
  */
-class HttpMainProxyListener(val listenPort: Int, val serverSocket: IServerSocket) : Thread() {
+class HttpMainProxyListener(val serverSocket: IServerSocket, val serverTaskFactory: HttpServerTaskFactory) : Thread() {
 
     val Logger by logger()
+    var running = true
 
     override fun run() {
         synchronized(this)
         {
-
-            while(true) {
+            do {
                 val acceptSocket = serverSocket.accept()
                 Logger.debug("Accepted a connection $acceptSocket")
 
@@ -37,9 +37,9 @@ class HttpMainProxyListener(val listenPort: Int, val serverSocket: IServerSocket
                         acceptSocket.inetAddress.hostAddress)
 
                 // start server thread to listen to connection
-                var serverTask = HttpServerTask(connectionData)
+                var serverTask = serverTaskFactory.createServerTask(connectionData)
                 serverTask.start()
-            }
+            } while (running)
 
         }
     }
