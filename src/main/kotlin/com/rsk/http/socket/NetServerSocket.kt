@@ -2,7 +2,7 @@ package com.rsk.http.socket
 
 import java.net.ServerSocket
 
-class ProxyServerSocket : IServerSocket {
+class NetServerSocket : IServerSocket {
     var ServerSocket: ServerSocket
 
     constructor(port: Int) {
@@ -11,7 +11,7 @@ class ProxyServerSocket : IServerSocket {
 
     override fun accept(): ISocket {
         val socket = ServerSocket.accept()
-        return ProxySocket(socket)
+        return NetSocket(socket)
     }
 
     override fun close() {

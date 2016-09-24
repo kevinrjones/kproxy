@@ -1,5 +1,7 @@
 package com.rsk.http.server
 
-interface HttpServerTask {
-    fun start():Unit
+import com.rsk.io.MultiplexWriter
+
+interface HttpServerTask : Runnable {
 }
+

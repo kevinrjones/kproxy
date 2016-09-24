@@ -1,10 +1,10 @@
 package com.rsk.http.proxy
 
-import com.rsk.http.server.ProxyHttpServerTask
-import com.rsk.http.server.HttpServerTaskFactory
 import com.rsk.http.socket.IServerSocket
 import com.rsk.logger
 import java.util.*
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 /**
  * The HttpMainProxyListener class will listen for incoming connections on {@link #_port port}
@@ -17,7 +17,9 @@ import java.util.*
  * @version 0.1
  * Created by kevin on 04/09/2016.
  */
-class HttpMainProxyListener(val serverSocket: IServerSocket, val serverTaskFactory: HttpServerTaskFactory) : Thread() {
+class HttpMainProxyListener(val executor: ExecutorService,
+                            val serverSocket: IServerSocket,
+                            val proxyTaskFactory: IHttpProxyTaskFactory) : Thread() {
 
     val Logger by logger()
     var running = true
@@ -26,22 +28,25 @@ class HttpMainProxyListener(val serverSocket: IServerSocket, val serverTaskFacto
         synchronized(this)
         {
             do {
+                Logger.debug("Waiting to connect")
                 val acceptSocket = serverSocket.accept()
-                Logger.debug("Accepted a connection $acceptSocket")
+                Logger.debug("Accepted a connection on ${acceptSocket.inetAddress}:${acceptSocket.port}")
 
                 // create ConnectionData and pass it off
-                var connectionData = ConnectionData(
+                Logger.debug("Create a ConnectionData")
+                val connectionData = ConnectionData(
                         acceptSocket,
                         "Active",
                         Date(),
-                        acceptSocket.inetAddress.hostAddress)
+                        acceptSocket.inetAddress.hostAddress
+                )
 
-                // start server thread to listen to connection
-                var serverTask = serverTaskFactory.createServerTask(connectionData)
-                serverTask.start()
+                Logger.debug("Creating the server task")
+                val serverTask = proxyTaskFactory.createServerTask(connectionData)
+                executor.submit(serverTask)
             } while (running)
-
         }
     }
+
 }
 

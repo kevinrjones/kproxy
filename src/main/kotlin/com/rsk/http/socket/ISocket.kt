@@ -6,5 +6,8 @@ import java.net.InetAddress
 interface ISocket {
     val inetAddress: InetAddress
     val inputStream: InputStream
+    val port: Int
+
+    fun close()
 
 }

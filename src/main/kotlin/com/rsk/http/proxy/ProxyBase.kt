@@ -1,6 +1,6 @@
 package com.rsk.http.proxy
 
-abstract class ProxyBase : Thread() {
+abstract class ProxyBase  {
     /**
      * Content length header name
      */
