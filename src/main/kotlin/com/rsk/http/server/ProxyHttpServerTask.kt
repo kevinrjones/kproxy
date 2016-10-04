@@ -5,19 +5,18 @@ import com.rsk.http.proxy.ConnectionData
 import com.rsk.http.proxy.IHttpProxyTaskFactory
 import com.rsk.http.proxy.Listeners
 import com.rsk.http.proxy.ProxyBase
+import com.rsk.io.MultiplexOutputStream
 import com.rsk.io.MultiplexWriter
 import com.rsk.logger
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.io.OutputStream
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
 
 class ProxyHttpServerTask(val connectionData: ConnectionData, val proxyTaskFactory: IHttpProxyTaskFactory, listeners: Listeners) :  HttpServerTask, ProxyBase() {
 
     var clientData: ProxyHttpServerData = ProxyHttpServerData()
     val headerListeners: MultiplexWriter
-    val typeListeners: MultiplexWriter
+    val typeListeners: MultiplexOutputStream
 
     val Logger by logger()
 
@@ -31,9 +30,6 @@ class ProxyHttpServerTask(val connectionData: ConnectionData, val proxyTaskFacto
     override fun run() {
         Logger.debug("Starting the proxy server")
         val inputReader: BufferedReader = BufferedReader(InputStreamReader(connectionData.socket.inputStream))
-
-
-
 
         try {
             do {
@@ -62,6 +58,7 @@ class ProxyHttpServerTask(val connectionData: ConnectionData, val proxyTaskFacto
         connectionData.requestLine = clientData.strRequestLine
 
         Logger.debug("Execute the client task")
+        //todo: Set listeners
         val client = proxyTaskFactory.createClientTask(connectionData)
 
         // wait for an event and forward the line

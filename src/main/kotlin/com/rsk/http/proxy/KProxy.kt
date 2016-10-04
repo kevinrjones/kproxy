@@ -1,6 +1,8 @@
 package com.rsk.http.proxy
 
+import com.rsk.http.client.ApacheHttpClient
 import com.rsk.http.socket.NetServerSocket
+import com.rsk.io.MultiplexOutputStream
 import com.rsk.io.MultiplexWriter
 import com.rsk.logger
 import com.rsk.threading.ExceptionHandlingThreadPool
@@ -48,9 +50,9 @@ class KProxy() {
     private fun start(port: Int) {
         var ss: NetServerSocket = NetServerSocket(port)
         val requestHeaderWriter = MultiplexWriter(OutputStreamWriter(System.out))
-        val requestTypeWriter = MultiplexWriter(OutputStreamWriter(System.out))
+        val requestTypeWriter = MultiplexOutputStream(System.out)
         val responseHeaderWriter = MultiplexWriter(OutputStreamWriter(System.out))
-        var responseTypeWriter = MultiplexWriter(OutputStreamWriter(System.out))
+        val responseTypeWriter = MultiplexOutputStream(System.out)
 
 
         do {
@@ -58,7 +60,7 @@ class KProxy() {
                 Logger.debug("Starting proxy")
 
                 Logger.debug("Create a new proxy listener")
-                val server = HttpMainProxyListener(executor, ss, ProxyTaskFactory(Listeners(requestHeaderWriter, requestTypeWriter), Listeners(responseHeaderWriter, responseTypeWriter)))
+                val server = HttpMainProxyListener(executor, ss, ProxyTaskFactory(Listeners(requestHeaderWriter, requestTypeWriter), Listeners(responseHeaderWriter, responseTypeWriter), ApacheHttpClient()))
                 Logger.debug("Start the proxy listener")
                 server.start()
                 Logger.debug("Proxy started")

@@ -3,11 +3,9 @@ package com.rsk.http.client
 import com.rsk.http.proxy.ConnectionData
 import com.rsk.http.proxy.Listeners
 import com.rsk.http.proxy.ProxyBase
+import com.rsk.io.MultiplexOutputStream
 import com.rsk.io.MultiplexWriter
 import com.rsk.logger
-import org.apache.http.client.methods.*
-import org.apache.http.impl.client.HttpClients
-import org.apache.http.util.EntityUtils
 import java.net.URL
 
 /**
@@ -15,17 +13,18 @@ import java.net.URL
  * as this is a proxy it should be the full line
  * GET http://foo.com/bar/quux HTTP/1.1
  */
-class ProxyHttpClientTask(connectionData: ConnectionData, listeners: Listeners) : HttpClientTask, ProxyBase() {
-
+class ProxyHttpClientTask(connectionData: ConnectionData, listeners: Listeners, val httpClient: IHttpClient) : HttpClientTask, ProxyBase() {
 
     val Logger by logger()
 
     val headerListeners: MultiplexWriter
-    val typeListeners: MultiplexWriter
+    val typeListeners: MultiplexOutputStream
 
-    override var verb: String? = null
-    override var serverUrl: URL? = null
-    override var version: String? = null
+    val streamToOriginalClient = connectionData.socket.outputStream
+
+    lateinit override var verb: String
+    lateinit override var serverUrl: URL
+    lateinit override var version: String
     override var port: Int? = null
 
 
@@ -46,8 +45,7 @@ class ProxyHttpClientTask(connectionData: ConnectionData, listeners: Listeners) 
 
         processRequestLine(requestParts)
 
-
-        port = if (serverUrl?.port == -1) 80 else serverUrl?.port
+        port = if (serverUrl.port == -1) 80 else serverUrl.port
         Logger.debug("ProxyHttpClientTask - verb: $verb, serverUrl: $serverUrl, version: $version, port: $port")
 
         processRequest()
@@ -67,9 +65,9 @@ class ProxyHttpClientTask(connectionData: ConnectionData, listeners: Listeners) 
             serverUrl = URL(requestParts[1])
         } else {
             if (urlString.endsWith("443")) {
-                serverUrl = URL("https://${urlString}")
+                serverUrl = URL("https://$urlString")
             } else {
-                serverUrl = URL("http://${urlString}")
+                serverUrl = URL("http://$urlString")
             }
         }
 
@@ -82,33 +80,19 @@ class ProxyHttpClientTask(connectionData: ConnectionData, listeners: Listeners) 
         Logger.debug("Start connection: $serverUrl")
 
         Logger.debug("Create httpClient")
-        val httpclient = HttpClients.createDefault()
-        val request: HttpRequestBase
-        when (verb) {
-            "GET" -> request = HttpGet(serverUrl?.toURI())
-            "POST" -> request = HttpPost(serverUrl?.toURI())
-            "PUT" -> request = HttpPut(serverUrl?.toURI())
-            "OPTIONS" -> request = HttpOptions(serverUrl?.toURI())
-            "HEAD" -> request = HttpHead(serverUrl?.toURI())
-            "DELETE" -> request = HttpDelete(serverUrl?.toURI())
-            "TRACE" -> request = HttpTrace(serverUrl?.toURI())
-            else -> request = HttpGet(serverUrl?.toURI())
-        }
 
-        val response1 = httpclient.execute(request)
+        val response = httpClient.executeCommand(serverUrl, verb)
 
-        response1.use {
-            Logger.debug("HttpResponse status: ${response1.statusLine}")
-            val entity1 = response1.entity
-            // do something useful with the response body
-            // and ensure it is fully consumed
-            EntityUtils.consume(entity1)
+
+        response.use {
+            Logger.debug("HttpResponse status: ${response.statusLine}")
+
+            //todo: stream data back to origin
+
+            response.headers.forEach { headerListeners.write(it.name); headerListeners.write(":"); headerListeners.write(it.value); }
+            response.entity.writeTo(typeListeners)
         }
         Logger.debug("Finished connection: $serverUrl")
-    }
-
-    override fun setListeners(headerListeners: MultiplexWriter, typeListeners: MultiplexWriter) {
-//        throw UnsupportedOperationException("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
 }

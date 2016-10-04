@@ -6,6 +6,7 @@ import com.rsk.http.proxy.ConnectionData
 import com.rsk.http.proxy.IHttpProxyTaskFactory
 import com.rsk.http.proxy.Listeners
 import com.rsk.http.socket.ISocket
+import com.rsk.io.MultiplexOutputStream
 import com.rsk.io.MultiplexWriter
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.describe
@@ -19,7 +20,7 @@ class ProxyHttpServerTaskSpek : Spek({
     val socket: ISocket = mock()
     var serverTask:ProxyHttpServerTask? = null
     val httpProxyTaskFactory: IHttpProxyTaskFactory = mock()
-    val listeners: Listeners = Listeners(MultiplexWriter(), MultiplexWriter())
+    val listeners: Listeners = Listeners(MultiplexWriter(), MultiplexOutputStream())
 
     describe("the proxy server task") {
 

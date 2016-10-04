@@ -1,10 +1,11 @@
 buildscript {
-    ext.kotlin_version = '1.1-M01'
-    ext.kotlin_gradle_version = '1.1-M01'
+    ext.kotlin_version = '1.0.4'
+    ext.kotlin_gradle_version = '1.0.4'
 
     ext.logback_version = '1.1.7'
     ext.slf4j_version = '1.7.21'
     ext.httpClient_version = '4.5.2'
+
     ext.junit_version = '5.0.0-ALPHA'
     ext.kluent_version = '1.6'
     ext.mokito_kotlin_version = '0.6.0'

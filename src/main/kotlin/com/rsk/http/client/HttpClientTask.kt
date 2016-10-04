@@ -5,11 +5,10 @@ import java.net.URI
 import java.net.URL
 
 interface HttpClientTask  {
-    var verb: String?
-    var serverUrl: URL?
-    var version: String?
+    var verb: String
+    var serverUrl: URL
+    var version: String
     var port: Int?
 
-    fun setListeners(headerListeners: MultiplexWriter, typeListeners: MultiplexWriter)
     fun processRequest()
 }
