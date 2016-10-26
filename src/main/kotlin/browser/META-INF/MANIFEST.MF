@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Class-Path: junit-platform-commons-1.0.0-M2.jar kotlin-stdlib-1.0.4.ja
+ r logback-classic-1.1.7.jar kotlin-runtime-1.0.4.jar kotlin-reflect-1
+ .0.4.jar commons-logging-1.2.jar junit-platform-launcher-1.0.0-M2.jar
+  slf4j-api-1.7.21.jar httpclient-4.5.2.jar commons-codec-1.9.jar juni
+ t-platform-engine-1.0.0-M2.jar httpcore-4.4.4.jar kotlin-runtime.jar 
+ kotlin-reflect.jar opentest4j-1.0.0-M1.jar logback-core-1.1.7.jar spe
+ k-junit-platform-engine-1.0.89.jar spek-api-1.0.89.jar
+Main-Class: com.rsk.client.Program
+

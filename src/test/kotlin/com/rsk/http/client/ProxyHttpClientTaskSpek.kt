@@ -1,8 +1,6 @@
 package com.rsk.http.client
 
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.reset
-import com.nhaarman.mockito_kotlin.whenever
+import com.nhaarman.mockito_kotlin.*
 import com.rsk.http.proxy.ConnectionData
 import com.rsk.http.proxy.Listeners
 import com.rsk.http.socket.ISocket
@@ -15,6 +13,7 @@ import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import org.junit.gen5.api.Assertions
 import org.junit.gen5.api.Assertions.*
+import java.io.OutputStream
 import java.net.URL
 import java.util.*
 
@@ -30,8 +29,8 @@ class HttpClientTaskSpek : Spek({
 
         whenever(httpResponse.statusLine).thenReturn("200 OK")
         whenever(httpResponse.entity).thenReturn(proxyHttpEntity)
-        whenever(httpClient.executeCommand(URL("http://localhost"), "GET")).thenReturn(httpResponse)
-        whenever(httpClient.executeCommand(URL("http://localhost:8080"), "GET")).thenReturn(httpResponse)
+        whenever(httpClient.createConnection(URL("http://localhost"), 80)).thenReturn(socket)
+        whenever(httpClient.createConnection(URL("http://localhost:8080"), 8080)).thenReturn(socket)
     }
 
     describe("the http client") {
@@ -74,5 +73,6 @@ class HttpClientTaskSpek : Spek({
             Assertions.assertEquals("HTTP/1.1", proxyClient.version)
             Assertions.assertEquals(80, proxyClient.port)
         }
+
     }
 })
