@@ -1,6 +1,6 @@
 package com.rsk.http.client
 
-import org.apache.http.Header
+import com.rsk.http.socket.ISocket
 import java.io.Closeable
 import java.io.IOException
 import java.io.InputStream
@@ -8,7 +8,8 @@ import java.io.OutputStream
 import java.net.URL
 
 interface IHttpClient {
-    fun executeCommand(url: URL, verb: String): ProxyHttpResponse
+    fun createConnection(url:  String, port: Int?): ISocket
+//    fun executeCommand(url: URL, verb: String): ProxyHttpResponse
 }
 
 interface ProxyHttpResponse : Closeable {

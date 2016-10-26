@@ -1,0 +1,30 @@
+<component name="ArtifactManager">
+  <artifact name="kproxy_main:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/kproxy_main_jar</output-path>
+    <root id="root">
+      <element id="archive" name="kproxy_main.jar">
+        <element id="directory" name="META-INF">
+          <element id="file-copy" path="$PROJECT_DIR$/src/main/kotlin/META-INF/MANIFEST.MF" />
+        </element>
+        <element id="module-output" name="kproxy_main" />
+      </element>
+      <element id="library" level="project" name="Gradle: org.junit.platform:junit-platform-commons:1.0.0-M2" />
+      <element id="library" level="project" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib:1.0.4" />
+      <element id="library" level="project" name="Gradle: ch.qos.logback:logback-classic:1.1.7" />
+      <element id="library" level="project" name="Gradle: org.jetbrains.kotlin:kotlin-runtime:1.0.4" />
+      <element id="library" level="project" name="Gradle: org.jetbrains.kotlin:kotlin-reflect:1.0.4" />
+      <element id="library" level="project" name="Gradle: commons-logging:commons-logging:1.2" />
+      <element id="library" level="project" name="Gradle: org.junit.platform:junit-platform-launcher:1.0.0-M2" />
+      <element id="library" level="project" name="Gradle: org.slf4j:slf4j-api:1.7.21" />
+      <element id="library" level="project" name="Gradle: org.apache.httpcomponents:httpclient:4.5.2" />
+      <element id="library" level="project" name="Gradle: commons-codec:commons-codec:1.9" />
+      <element id="library" level="project" name="Gradle: org.junit.platform:junit-platform-engine:1.0.0-M2" />
+      <element id="library" level="project" name="Gradle: org.apache.httpcomponents:httpcore:4.4.4" />
+      <element id="library" level="project" name="KotlinJavaRuntime" />
+      <element id="library" level="project" name="Gradle: org.opentest4j:opentest4j:1.0.0-M1" />
+      <element id="library" level="project" name="Gradle: ch.qos.logback:logback-core:1.1.7" />
+      <element id="library" level="project" name="Gradle: org.jetbrains.spek:spek-junit-platform-engine:1.0.89" />
+      <element id="library" level="project" name="Gradle: org.jetbrains.spek:spek-api:1.0.89" />
+    </root>
+  </artifact>
+</component>

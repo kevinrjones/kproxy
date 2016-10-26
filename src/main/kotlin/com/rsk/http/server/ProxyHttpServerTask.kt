@@ -7,18 +7,14 @@ import com.rsk.http.proxy.Listeners
 import com.rsk.http.proxy.ProxyBase
 import com.rsk.io.MultiplexOutputStream
 import com.rsk.io.MultiplexWriter
-import com.rsk.logger
-import java.io.BufferedReader
-import java.io.InputStreamReader
-import java.io.OutputStream
+import com.rsk.readLine
+import java.io.*
 
-class ProxyHttpServerTask(val connectionData: ConnectionData, val proxyTaskFactory: IHttpProxyTaskFactory, listeners: Listeners) :  HttpServerTask, ProxyBase() {
+class ProxyHttpServerTask(val connectionData: ConnectionData, val proxyTaskFactory: IHttpProxyTaskFactory, listeners: Listeners) : HttpServerTask, ProxyBase() {
 
-    var clientData: ProxyHttpServerData = ProxyHttpServerData()
+    val clientData: ProxyHttpRequestData = ProxyHttpRequestData()
     val headerListeners: MultiplexWriter
     val typeListeners: MultiplexOutputStream
-
-    val Logger by logger()
 
     init {
         headerListeners = listeners.responseHeaderListeners
@@ -29,54 +25,68 @@ class ProxyHttpServerTask(val connectionData: ConnectionData, val proxyTaskFacto
 
     override fun run() {
         Logger.debug("Starting the proxy server")
-        val inputReader: BufferedReader = BufferedReader(InputStreamReader(connectionData.socket.inputStream))
 
         try {
             do {
                 Logger.debug("Start consuming the request")
-                consumeRequest(inputReader)
+                consumeRequest(connectionData.socket.inputStream)
             } while (running)
-        } finally {
+        } catch (e: Exception) {
+            Logger.error("consumeRequest has thrown an exception", e)
+        }
+        finally {
             Logger.debug("Proxy server: Finish")
             connectionData.socket.close()
         }
-
     }
 
-    private fun consumeRequest(reader: BufferedReader): Boolean {
+    private fun consumeRequest(inputStream: InputStream): Boolean {
         Logger.debug("Proxy server: consume request")
-        val client = readHttpRequest( reader)
-        readHttpHeaders(client, reader)
+        val client = readHttpRequest(inputStream)
+
+        readAndProcessHttpHeaders({client.writeHeader(it)}, inputStream, { clientData.addHeader(it) })
+        readAndProcessHttpEntity(client, inputStream)
+        client.processResponse()
         return true
     }
 
-    // todo: remove the null type and initialiser when passing the outputstream(writer?)
-    internal fun readHttpRequest(bis: BufferedReader, os: OutputStream? = null): HttpClientTask {
+    internal fun readHttpRequest(inputStream: InputStream): HttpClientTask {
         Logger.debug("Proxy server: reading request line")
-        clientData.strRequestLine = bis.readLine() ?: ""
+        clientData.strRequestLine = inputStream.readLine()
         Logger.debug("Proxy server: request line is ${clientData.strRequestLine}")
         connectionData.requestLine = clientData.strRequestLine
 
         Logger.debug("Execute the client task")
         //todo: Set listeners
-        val client = proxyTaskFactory.createClientTask(connectionData)
+        val client = proxyTaskFactory.createClientTask(connectionData, this)
 
         // wait for an event and forward the line
         Logger.debug("Proxy server: request line is ${clientData.strRequestLine}")
         return client
     }
 
-    // todo: remove the null type and initialiser when passing the outputstream(writer?)
-    internal fun readHttpHeaders(client: HttpClientTask, bis: BufferedReader, osServer: OutputStream? = null): Boolean {
-        Logger.debug("Proxy server: reading headers")
-        var header: String? = bis.readLine() ?: return false
+    private fun readAndProcessHttpEntity(client: HttpClientTask, inputStream: InputStream) {
+        val cl: String?
+        val data: ByteArray
 
-        while (header != null && header.length != 0) {
-            clientData.addHeader(header)
-            Logger.debug("Proxy server: $header")
-            header = bis.readLine()
+        cl = clientData.headers[CONTENT_LENGTH]
+
+        data = if (cl != null) {
+            Logger.debug("Read data from client - size is $cl")
+            readContentLengthData(inputStream, Integer.parseInt(cl))
+        } else {
+            ByteArray(0)
         }
-        return true
+
+        if (data.size > 0) client.writeEntity(data)
+    }
+
+    override fun writeHeader(header: String) {
+        writeHeader(header, connectionData.socket.outputStream)
+    }
+
+    override fun writeEntity(data: ByteArray) {
+        writeEntity(data, connectionData.socket.outputStream)
     }
 
 }

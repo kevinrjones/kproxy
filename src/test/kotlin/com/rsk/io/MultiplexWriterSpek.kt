@@ -4,7 +4,7 @@ import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import java.io.StringWriter
-import org.junit.gen5.api.Assertions.*
+import org.junit.jupiter.api.Assertions.*
 
 class MultiplexWriterSpek : Spek( {
     describe("a multiplex writer") {

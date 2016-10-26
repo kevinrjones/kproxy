@@ -13,8 +13,8 @@ class ProxyTaskFactory(val serverListeners: Listeners, val clientListeners: List
         return ProxyHttpServerTask(connectionData, this, serverListeners)
     }
 
-    override fun createClientTask(connectionData: ConnectionData): HttpClientTask {
-        return ProxyHttpClientTask(connectionData, clientListeners, httpClient)
+    override fun createClientTask(connectionData: ConnectionData, server: HttpServerTask): HttpClientTask {
+        return ProxyHttpClientTask(connectionData, clientListeners, httpClient, server)
     }
 
 }

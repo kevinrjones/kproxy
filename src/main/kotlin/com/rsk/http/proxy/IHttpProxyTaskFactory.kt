@@ -6,5 +6,5 @@ import com.rsk.http.server.HttpServerTask
 interface IHttpProxyTaskFactory {
     fun createServerTask(connectionData: ConnectionData): HttpServerTask
 
-    fun createClientTask(connectionData: ConnectionData): HttpClientTask
+    fun createClientTask(connectionData: ConnectionData, server: HttpServerTask): HttpClientTask
 }

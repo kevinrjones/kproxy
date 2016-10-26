@@ -1,6 +1,6 @@
 package com.rsk.http.proxy
 
-import com.rsk.http.client.ApacheHttpClient
+import com.rsk.http.client.SocketHttpClient
 import com.rsk.http.socket.NetServerSocket
 import com.rsk.io.MultiplexOutputStream
 import com.rsk.io.MultiplexWriter
@@ -9,7 +9,6 @@ import com.rsk.threading.ExceptionHandlingThreadPool
 import java.io.OutputStreamWriter
 import java.net.BindException
 import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
 
 /**
 The main console application code that will run and start the listener
@@ -27,7 +26,7 @@ class KProxy() {
 
             val proxy = KProxy()
 
-            var port: Int = 8080
+            var port: Int = 9090
             var i = 0
             while (i < args.size) {
                 when (args[i]) {
@@ -60,7 +59,7 @@ class KProxy() {
                 Logger.debug("Starting proxy")
 
                 Logger.debug("Create a new proxy listener")
-                val server = HttpMainProxyListener(executor, ss, ProxyTaskFactory(Listeners(requestHeaderWriter, requestTypeWriter), Listeners(responseHeaderWriter, responseTypeWriter), ApacheHttpClient()))
+                val server = HttpMainProxyListener(executor, ss, ProxyTaskFactory(Listeners(requestHeaderWriter, requestTypeWriter), Listeners(responseHeaderWriter, responseTypeWriter), SocketHttpClient()))
                 Logger.debug("Start the proxy listener")
                 server.start()
                 Logger.debug("Proxy started")

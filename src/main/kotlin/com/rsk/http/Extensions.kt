@@ -7,6 +7,8 @@ package com.rsk
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.io.BufferedInputStream
+import java.io.InputStream
 import kotlin.reflect.KClass
 import kotlin.reflect.companionObject
 
@@ -32,4 +34,21 @@ interface Loggable {}
 
 fun Loggable.logger(): Logger {
     return LoggerFactory.getLogger(unwrapCompanionClass(this.javaClass).name)
+}
+
+fun InputStream.readLine(): String {
+    val readLineBuffer = ByteArray(1024)
+
+    var i = -1
+    var ret:Int
+    do {
+        i++
+        ret = this.read(readLineBuffer, i, 1)
+    } while (readLineBuffer[i].toChar() != '\n' && ret != -1)
+
+    if (i == 0)
+        return ""
+
+    val str = String(readLineBuffer, 0, i - 1)
+    return str
 }
